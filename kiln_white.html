@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เตาเผาอัจฉริยะ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f4f6f9;font-family:'Segoe UI',system-ui,sans-serif;padding:16px}
+:root{--bg:#f4f6f9;--bg2:#ffffff;--bg3:#eef0f4;--acc:#c0390e;--acc2:#e05520;--grn:#166534;--blu:#1e40af;--red:#b91c1c;--amb:#92400e;--txt:#0f172a;--txt2:#1e293b;--txt3:#475569;--bdr:#cbd5e1}
+.app{background:var(--bg);color:var(--txt);border-radius:12px;overflow:hidden;font-size:13px;border:1.5px solid var(--bdr);max-width:900px;margin:0 auto}
+.top{background:#fff;border-bottom:2px solid var(--bdr);padding:10px 16px;display:flex;align-items:center;gap:10px}
+.logo{font-size:15px;font-weight:900;color:var(--acc);flex:1;letter-spacing:-.3px}
+.rb{border:1.5px solid var(--bdr);border-radius:20px;padding:3px 12px;font-size:11px;cursor:pointer;color:var(--txt3);font-weight:700;background:var(--bg3)}
+.rb.on{border-color:var(--acc);color:var(--acc);background:#fff5f2}
+.bell{cursor:pointer;font-size:15px;position:relative}
+.ndot{position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--red);display:none}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--bdr)}
+.tab{padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--txt3);border-bottom:2.5px solid transparent;margin-bottom:-2px}
+.tab.on{color:var(--acc);border-color:var(--acc)}
+.tab:hover:not(.on){color:var(--txt2)}
+.pane{display:none;padding:14px}
+.pane.on{display:block}
+.sh{background:#fff;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.clk{font-size:24px;font-weight:900;color:var(--amb)}
+.dl{font-size:11px;color:var(--txt3);font-weight:700;margin-top:2px}
+.pb{padding:4px 13px;border-radius:20px;font-size:11px;font-weight:800}
+.ph-idle{background:#f1f5f9;color:#475569;border:1px solid var(--bdr)}
+.ph-warm{background:#fef9c3;color:#713f12;border:1px solid #fde047}
+.ph-burn{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.ph-peak{background:#ffedd5;color:#7c2d12;border:1px solid #fb923c}
+.ph-cool{background:#dbeafe;color:#1e3a8a;border:1px solid #93c5fd}
+.ph-done{background:#dcfce7;color:#14532d;border:1px solid #86efac}
+.sbtn{background:var(--acc);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;font-weight:800}
+.sbtn:hover{background:var(--acc2)}
+.sbtn:disabled{background:#e2e8f0;color:#94a3b8;cursor:not-allowed}
+.rbtn2{background:#fff;border:1.5px solid var(--bdr);color:var(--txt3);border-radius:8px;padding:9px 13px;font-size:12px;cursor:pointer;font-weight:700}
+.rbtn2:hover{border-color:var(--red);color:var(--red)}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col{display:flex;flex-direction:column;gap:10px}
+.p{background:#fff;border:1.5px solid var(--bdr);border-radius:10px;padding:13px}
+.pt{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:11px;font-weight:800}
+.tc{width:110px;height:110px;border-radius:50%;border:3px solid var(--bdr);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 9px;transition:.4s;position:relative;background:var(--bg3)}
+.tn{font-size:28px;font-weight:900;line-height:1;color:var(--txt)}
+.tu{font-size:12px;color:var(--txt3);font-weight:700}
+.tr{font-size:15px;position:absolute;top:5px;right:9px;font-weight:900}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.sc{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px}
+.si{font-size:17px;width:26px;text-align:center}
+.sn{font-size:10px;color:var(--txt3);font-weight:800;text-transform:uppercase;letter-spacing:.3px}
+.sv{font-size:12px;font-weight:800;color:var(--txt);margin-top:1px}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid #cbd5e1}
+.don{background:#16a34a;border-color:#15803d}
+.dof{background:#e2e8f0;border-color:#cbd5e1}
+.dwa{background:#d97706;border-color:#b45309}
+.ob{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:6px;height:13px;overflow:hidden;margin:5px 0}
+.of{height:100%;border-radius:5px;transition:.5s}
+.ol{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);font-weight:700}
+.cw{position:relative;width:100%;height:210px}
+.lr{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);font-weight:700}
+.ls{width:20px;height:3px;border-radius:1px}
+.el{max-height:145px;overflow-y:auto;border:1.5px solid var(--bdr);border-radius:7px;background:var(--bg3)}
+.ei{display:flex;gap:8px;padding:5px 9px;border-bottom:1px solid var(--bdr);font-size:11px}
+.ei:last-child{border:none}
+.et{color:var(--amb);min-width:44px;font-weight:900}
+.em{color:var(--txt3);font-weight:600}
+.ei.hi .em{color:var(--txt);font-weight:800}
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-bottom:10px}
+.kc{background:#fff;border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden;cursor:pointer;transition:.15s}
+.kc.sel{border-color:var(--acc);box-shadow:0 0 0 3px #ffedd5}
+.kc:hover{border-color:var(--acc2)}
+.ki{height:85px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.ki-i{background:#f8fafc;border-bottom:1px solid var(--bdr)}
+.ki-b{background:#fff7f5;border-bottom:1px solid #fed7aa}
+.ki-d{background:#f0fdf4;border-bottom:1px solid #bbf7d0}
+.ki-c{background:#eff6ff;border-bottom:1px solid #bfdbfe}
+.kb{padding:9px 11px}
+.kn{font-weight:800;font-size:13px;color:var(--txt)}
+.ks{font-size:10px;color:var(--txt3);margin-top:2px;font-weight:700}
+.kp{display:inline-block;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:800;margin-top:5px}
+.kp-i{background:#f1f5f9;color:#475569}
+.kp-b{background:#fee2e2;color:#991b1b}
+.kp-d{background:#dcfce7;color:#166534}
+.kp-c{background:#dbeafe;color:#1e40af}
+.kp-w{background:#fef9c3;color:#713f12}
+.tb{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:12px;padding:1px 4px}
+.tb:hover{color:var(--red)}
+.ab{background:#fff;border:1.5px solid var(--bdr);color:var(--txt2);border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer;font-weight:700}
+.ab:hover{border-color:var(--acc);color:var(--acc)}
+.mi{padding:7px 0;border-bottom:1px solid var(--bdr);font-size:12px;color:var(--txt);font-weight:600}
+.md{font-size:10px;color:var(--txt3);margin-top:2px;font-weight:600}
+.mc{color:var(--amb);font-size:11px;float:right;font-weight:800}
+.ws{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--txt);font-weight:700}
+.sep{height:1px;background:var(--bdr);margin:8px 0}
+.mg4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.mv{font-size:20px;font-weight:900;color:var(--acc)}
+.ml{font-size:10px;color:var(--txt3);margin-top:3px;font-weight:700}
+.vtb{width:100%;border-collapse:collapse;font-size:12px}
+.vtb th{color:var(--txt3);font-weight:800;padding:8px 10px;border-bottom:2px solid var(--bdr);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.vtb td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--txt);font-weight:600}
+.vtb tr:hover td{background:var(--bg3)}
+.al{padding:10px 13px;border-radius:8px;margin-bottom:7px;font-size:12px;display:flex;justify-content:space-between;align-items:flex-start;font-weight:700}
+.al.u{background:#fff5f5;border:1.5px solid #fecaca;color:var(--txt)}
+.al.r{background:var(--bg3);border:1px solid var(--bdr);opacity:.6}
+.at{font-size:10px;color:var(--txt3);margin-top:3px;font-weight:700}
+.arb{background:#fff;border:1.5px solid var(--bdr);color:var(--txt3);font-size:10px;cursor:pointer;border-radius:4px;padding:2px 8px;white-space:nowrap;margin-left:8px;font-weight:700}
+.arb:hover{color:var(--acc);border-color:var(--acc)}
+.mb{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:200;align-items:center;justify-content:center}
+.mb.on{display:flex}
+.mx{background:#fff;border:1.5px solid var(--bdr);border-radius:12px;padding:20px;width:310px;max-width:95vw;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.mx h3{font-size:14px;font-weight:900;color:var(--txt);margin-bottom:13px}
+.mx input,.mx select{background:var(--bg3);border:1.5px solid var(--bdr);color:var(--txt);border-radius:6px;padding:7px 10px;font-size:12px;width:100%;margin-bottom:8px;font-weight:700}
+.mx label{font-size:11px;color:var(--txt3);font-weight:800;display:block;margin-bottom:2px}
+.mbt{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;border:1.5px solid var(--bdr);background:var(--bg3);color:var(--txt2);border-radius:6px;padding:7px;cursor:pointer;font-size:12px;font-weight:700}
+.btn.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn.p:hover{background:var(--acc2)}
+.oil-mini{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.obox{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:7px;padding:8px;text-align:center}
+.obox-l{font-size:10px;color:var(--txt3);font-weight:800}
+.obox-v{font-size:14px;font-weight:900;color:var(--txt);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+  <div class="logo">🔥 เตาเผาอัจฉริยะ</div>
+  <div id="rbu" class="rb on" onclick="setRole('user')">ผู้ใช้งาน</div>
+  <div id="rbv" class="rb" onclick="setRole('vendor')">ผู้จำหน่าย</div>
+  <div class="bell" onclick="showP('alerts')">🔔<span class="ndot" id="ndot"></span></div>
+</div>
+<div class="tabs" id="tbu">
+  <div class="tab on" onclick="showP('kilns')">เตาเผา</div>
+  <div class="tab" onclick="showP('sim')">จำลองการเผา</div>
+  <div class="tab" onclick="showP('stats')">สถิติ</div>
+  <div class="tab" onclick="showP('alerts')">แจ้งเตือน</div>
+</div>
+<div class="tabs" id="tbv" style="display:none">
+  <div class="tab on" onclick="showP('vendor')">แดชบอร์ดผู้จำหน่าย</div>
+  <div class="tab" onclick="showP('alerts')">แจ้งเตือน</div>
+</div>
+
+<div id="pane-kilns" class="pane on">
+  <div class="kg" id="kg"></div>
+  <button class="ab" onclick="om('ak')">+ เพิ่มเตาใหม่</button>
+</div>
+
+<div id="pane-sim" class="pane">
+  <div class="sh">
+    <div><div class="clk" id="clk">08:00</div><div class="dl" id="dl">ชั่วโมงที่ 0/24 | ยังไม่เริ่ม</div></div>
+    <div class="pb ph-idle" id="pb">รอเริ่ม</div>
+    <div style="flex:1"></div>
+    <button class="rbtn2" onclick="rst()">↺ รีเซต</button>
+    <button class="btn p" id="stBtn" onclick="om('sb')" style="padding:8px 14px;font-size:12px;white-space:nowrap;border-radius:7px">เริ่มรอบใหม่</button>
+    <button class="sbtn" id="stepBtn" onclick="step()" disabled>▶ จำลอง +1 ชม.</button>
+  </div>
+  <div class="mg">
+    <div class="col">
+      <div class="p">
+        <div class="pt">อุณหภูมิเตา</div>
+        <div class="tc" id="tcirc">
+          <span class="tr" id="ttrend" style="color:var(--txt3)">→</span>
+          <span class="tn" id="tnum">25</span>
+          <span class="tu">°C</span>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--txt3);font-weight:800;margin-bottom:9px" id="tsub">อุณหภูมิห้อง</div>
+        <div class="sep"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:9px">
+          <span style="font-size:11px;color:var(--txt2);font-weight:800">ชนิดไม้</span>
+          <select class="ws" id="wsel" onchange="wch()">
+            <option value="bamboo">ไม้ไผ่ (750°C)</option>
+            <option value="coconut">กะลามะพร้าว (780°C)</option>
+            <option value="tamarind">ไม้มะขาม (810°C)</option>
+            <option value="rubber" selected>ไม้ยางพารา (800°C)</option>
+            <option value="eucalyptus">ไม้ยูคาลิปตัส (820°C)</option>
+            <option value="teak">ไม้ดู่ (790°C)</option>
+            <option value="general">ไม้ทั่วไป (760°C)</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;margin-top:8px">
+          <span style="font-size:11px;color:var(--txt2);font-weight:800">ความชื้น</span>
+          <input type="number" id="moist" value="20" min="5" max="60" style="background:var(--bg3);border:1.5px solid var(--bdr);color:var(--txt);border-radius:6px;padding:4px 7px;font-size:12px;width:58px;font-weight:800">
+          <span style="font-size:11px;color:var(--txt3);font-weight:700">%</span>
+          <span style="font-size:11px;color:var(--acc);font-weight:900;margin-left:auto" id="meff"></span>
+        </div>
+      </div>
+      <div class="p">
+        <div class="pt">สถานะระบบ</div>
+        <div class="sg">
+          <div class="sc"><div class="si">🔥</div><div style="flex:1"><div class="sn">Burner</div><div class="sv" id="sv1">ปิด</div></div><div class="dot dof" id="sd1"></div></div>
+          <div class="sc"><div class="si">💨</div><div style="flex:1"><div class="sn">Afterburner</div><div class="sv" id="sv2">ปิด</div></div><div class="dot dof" id="sd2"></div></div>
+          <div class="sc"><div class="si">❄️</div><div style="flex:1"><div class="sn">ระบายความร้อน</div><div class="sv" id="sv3">ปิด</div></div><div class="dot dof" id="sd3"></div></div>
+          <div class="sc"><div class="si">🌡️</div><div style="flex:1"><div class="sn">ตัวควบคุม</div><div class="sv" id="sv4">ปิด</div></div><div class="dot dof" id="sd4"></div></div>
+        </div>
+      </div>
+      <div class="p">
+        <div class="pt">การใช้น้ำมันเชื้อเพลิง</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+          <span style="font-size:12px;color:var(--txt2);font-weight:800">ใช้ไปแล้ว</span>
+          <span style="font-size:19px;font-weight:900;color:var(--acc)" id="ou">0 L</span>
+        </div>
+        <div class="ob"><div class="of" id="of" style="width:0%;background:#16a34a"></div></div>
+        <div class="ol"><span>น้อย</span><span id="op" style="color:var(--txt2);font-weight:900">0%</span><span>มาก</span></div>
+        <div class="oil-mini">
+          <div class="obox"><div class="obox-l">อัตราการใช้</div><div class="obox-v" id="or2">0 L/ชม.</div></div>
+          <div class="obox"><div class="obox-l">ต้นทุน</div><div class="obox-v" id="oc2">฿0</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="p">
+        <div class="pt">กราฟอุณหภูมิ 24 ชั่วโมง</div>
+        <div class="lr">
+          <div class="li"><div style="width:20px;border-top:2.5px dashed #94a3b8"></div><span>มาตรฐาน</span></div>
+          <div class="li"><div class="ls" style="background:var(--acc)"></div><span>จำลอง</span></div>
+          <div class="li"><div class="ls" style="background:#93c5fd;opacity:.6"></div><span>โซน Afterburner</span></div>
+        </div>
+        <div class="cw"><canvas id="tc" role="img" aria-label="กราฟอุณหภูมิ 24 ชั่วโมง">กราฟอุณหภูมิ</canvas></div>
+      </div>
+      <div class="p">
+        <div class="pt">บันทึกเหตุการณ์</div>
+        <div class="el" id="el"><div class="ei"><span class="et">--:--</span><span class="em">รอเริ่มการจำลอง...</span></div></div>
+      </div>
+      <div class="p">
+        <div class="pt">ประวัติซ่อมบำรุง <button class="ab" onclick="om('am')" style="float:right;margin:0">🔧 เพิ่ม</button></div>
+        <div id="ml">
+          <div class="mi">ตรวจสอบระบบเผาไหม้<span class="mc">฿2,500</span><div class="md">12 มี.ค. 2568 | ช่างสมชาย</div></div>
+          <div class="mi">เปลี่ยนหัวฉีดน้ำมัน<span class="mc">฿4,800</span><div class="md">02 ก.พ. 2568 | ช่างวิชัย</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pane-stats" class="pane">
+  <div class="mg4">
+    <div class="p"><div class="mv">฿18,450</div><div class="ml">ต้นทุนน้ำมันเดือนนี้</div></div>
+    <div class="p"><div class="mv">87%</div><div class="ml">อัตราผลผลิต kg/kg</div></div>
+    <div class="p"><div class="mv">12</div><div class="ml">รอบการเผาเดือนนี้</div></div>
+    <div class="p"><div class="mv">4,200 kg</div><div class="ml">ผลผลิตรวม</div></div>
+  </div>
+  <div class="p" style="margin-bottom:10px"><div class="pt">ต้นทุนน้ำมันย้อนหลัง 6 เดือน</div><div class="cw"><canvas id="oc" role="img" aria-label="ต้นทุนน้ำมัน">ต้นทุน</canvas></div></div>
+  <div class="p"><div class="pt">วัตถุดิบ vs ผลผลิต (kg)</div><div class="cw"><canvas id="yc" role="img" aria-label="ผลผลิต">ผลผลิต</canvas></div></div>
+</div>
+
+<div id="pane-alerts" class="pane">
+  <div id="al"></div>
+  <div id="na" style="text-align:center;color:var(--txt3);font-size:13px;font-weight:700;padding:28px">ไม่มีการแจ้งเตือน</div>
+</div>
+
+<div id="pane-vendor" class="pane">
+  <table class="vtb"><thead><tr><th>ชื่อเตา</th><th>ลูกค้า</th><th>จังหวัด</th><th>วันติดตั้ง</th><th>อายุ</th></tr></thead><tbody id="vb"></tbody></table>
+</div>
+</div>
+
+<div class="mb" id="m-ak"><div class="mx"><h3>เพิ่มเตาใหม่</h3>
+  <label>ชื่อเตา</label><input id="ak1" placeholder="เช่น เตา D">
+  <label>วันที่ติดตั้ง</label><input id="ak2" type="date" value="2025-01-15">
+  <label>จังหวัด</label><input id="ak3" placeholder="เช่น ขอนแก่น">
+  <label>ชื่อลูกค้า</label><input id="ak4" placeholder="ชื่อลูกค้า">
+  <div class="mbt"><button class="btn" onclick="cm('ak')">ยกเลิก</button><button class="btn p" onclick="addK()">เพิ่มเตา</button></div>
+</div></div>
+<div class="mb" id="m-sb"><div class="mx"><h3>ตั้งค่ารอบการเผา</h3>
+  <label>วัตถุดิบ (kg)</label><input id="sb1" type="number" value="500" min="100">
+  <label>น้ำมันเต็มถัง (ลิตร)</label><input id="sb2" type="number" value="120" min="50">
+  <label>ราคาน้ำมัน (บาท/ลิตร)</label><input id="sb3" type="number" value="35" min="10">
+  <div class="mbt"><button class="btn" onclick="cm('sb')">ยกเลิก</button><button class="btn p" onclick="startB()">เริ่มจำลอง</button></div>
+</div></div>
+<div class="mb" id="m-am"><div class="mx"><h3>บันทึกการซ่อมบำรุง</h3>
+  <label>วันที่</label><input id="am1" type="date" value="2025-04-18">
+  <label>รายละเอียด</label><input id="am2" placeholder="รายละเอียดการซ่อม">
+  <label>ค่าใช้จ่าย (บาท)</label><input id="am3" type="number" placeholder="0">
+  <label>ชื่อช่าง</label><input id="am4" placeholder="ชื่อช่าง">
+  <div class="mbt"><button class="btn" onclick="cm('am')">ยกเลิก</button><button class="btn p" onclick="addM()">บันทึก</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const W={bamboo:{pk:750,lb:'ไม้ไผ่'},coconut:{pk:780,lb:'กะลามะพร้าว'},tamarind:{pk:810,lb:'ไม้มะขาม'},rubber:{pk:800,lb:'ไม้ยางพารา'},eucalyptus:{pk:820,lb:'ไม้ยูคาลิปตัส'},teak:{pk:790,lb:'ไม้ดู่'},general:{pk:760,lb:'ไม้ทั่วไป'}};
+let kilns=[{n:'เตา A',d:'2023-06-01',pv:'นครราชสีมา',cl:'บริษัท ไม้ดี จำกัด',st:'idle'},{n:'เตา B',d:'2022-11-15',pv:'ชัยภูมิ',cl:'นายสมศักดิ์ ใจดี',st:'idle'},{n:'เตา C',d:'2024-01-20',pv:'ขอนแก่น',cl:'วิสาหกิจชุมชน ฯ',st:'done'}];
+let ck=0,simOn=false,simH=0,simT=[],std=[],oilTot=0,oilMax=120,oilPr=35,rawKg=500,evts=[],alts=[];
+
+function bStd(pk){const c=[];for(let h=0;h<=24;h++){let t;if(h===0)t=25;else if(h<=1)t=65;else if(h<=3)t=65+((h-1)/2)*135;else if(h<=8)t=200+((h-3)/5)*(pk*.75-200);else if(h<=16)t=pk*.75+((h-8)/8)*(pk-pk*.75);else if(h<=18)t=pk-(h-16)*((pk-pk*.98)/2);else if(h<=20)t=pk*.98-((h-18)/2)*(pk*.98-400);else t=Math.max(25,400-((h-20)/4)*375);c.push(Math.round(t));}return c;}
+function sTemp(h,pk,m){return Math.max(25,Math.round(std[h]-(m>20?(m-20)*.8:0)+(Math.random()-.5)*18));}
+function oRate(t,ab,co){if(!simOn||simH===0)return 0;if(ab)return 3.5;if(co)return 1;if(t<400)return 3;if(t<600)return 5;if(t<750)return 6.5;if(t<820)return 5.5;return 2;}
+function getPhase(h,t,pk){if(h===0)return['รอเริ่ม','ph-idle'];if(t<=200)return['วอร์มอัพ + Afterburner','ph-warm'];if(t<pk*.85)return['เผาไหม้ขึ้น','ph-burn'];if(h>=17&&h<=18)return['อุณหภูมิสูงสุด 🔥','ph-peak'];if(h>=19)return['ระบายความร้อน','ph-cool'];if(h===24)return['เสร็จสิ้น ✓','ph-done'];return['เผาไหม้เต็มที่','ph-burn'];}
+function getSys(h,t){const ab=simOn&&t<=200&&h>0;const bu=simOn&&h>0&&h<=20&&!ab;const co=simOn&&h>=19;const pi=simOn&&h>0&&h<=20;return{ab,bu,co,pi};}
+
+let tCh=null;
+function bTC(){const ctx=document.getElementById('tc');if(!ctx)return;if(tCh){tCh.destroy();tCh=null;}const lbs=Array.from({length:25},(_,i)=>`${(8+i)%24}:00`);const sl=bSL();tCh=new Chart(ctx,{type:'line',data:{labels:lbs,datasets:[{data:Array(25).fill(200),fill:true,backgroundColor:'rgba(147,197,253,.18)',borderColor:'rgba(147,197,253,.4)',borderWidth:1,pointRadius:0,tension:0},{data:[...std],borderColor:'#94a3b8',borderDash:[5,4],borderWidth:2,pointRadius:0,fill:false,tension:.4},{data:sl,borderColor:'#c0390e',borderWidth:2.5,pointRadius:sl.map((_,i)=>i===simT.length-1&&simT.length>0?5:0),pointBackgroundColor:'#c0390e',fill:false,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${Math.round(c.raw)}°C`}}},scales:{x:{ticks:{color:'#475569',font:{size:10,weight:'700'},maxTicksLimit:8},grid:{color:'rgba(0,0,0,.07)'}},y:{min:0,max:900,ticks:{color:'#475569',font:{size:10,weight:'700'},callback:v=>v+'°'},grid:{color:'rgba(0,0,0,.07)'},title:{display:true,text:'°C',color:'#475569',font:{size:10,weight:'700'}}}}}});}
+function bSL(){const a=Array(25).fill(null);simT.forEach((v,i)=>{a[i]=v;});return a;}
+function uTC(){if(!tCh)return;const sl=bSL();tCh.data.datasets[2].data=sl;tCh.data.datasets[2].pointRadius=sl.map((_,i)=>i===simT.length-1&&simT.length>0?5:0);tCh.data.datasets[1].data=[...std];tCh.update('none');}
+
+let oC=null,yC=null;
+function bSC(){const oe=document.getElementById('oc'),ye=document.getElementById('yc');if(oe&&!oC)oC=new Chart(oe,{type:'bar',data:{labels:['พ.ย.','ธ.ค.','ม.ค.','ก.พ.','มี.ค.','เม.ย.'],datasets:[{data:[14200,16800,15500,18900,17200,18450],backgroundColor:'rgba(192,57,14,.75)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#475569',font:{size:10,weight:'700'}},grid:{display:false}},y:{ticks:{color:'#475569',font:{size:10,weight:'700'},callback:v=>'฿'+v.toLocaleString()},grid:{color:'rgba(0,0,0,.07)'}}}}});if(ye&&!yC)yC=new Chart(ye,{type:'bar',data:{labels:['พ.ย.','ธ.ค.','ม.ค.','ก.พ.','มี.ค.','เม.ย.'],datasets:[{label:'วัตถุดิบ',data:[800,950,900,1100,980,1050],backgroundColor:'rgba(30,64,175,.65)',borderRadius:5},{label:'ผลผลิต',data:[680,820,775,960,850,910],backgroundColor:'rgba(22,101,52,.65)',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#475569',font:{size:10,weight:'700'}},grid:{display:false}},y:{ticks:{color:'#475569',font:{size:10,weight:'700'}},grid:{color:'rgba(0,0,0,.07)'}}}}})}
+
+function startB(){rawKg=parseFloat(document.getElementById('sb1').value)||500;oilMax=parseFloat(document.getElementById('sb2').value)||120;oilPr=parseFloat(document.getElementById('sb3').value)||35;simOn=true;simH=0;simT=[25];oilTot=0;evts=[];const w=document.getElementById('wsel').value,m=parseFloat(document.getElementById('moist').value)||20;const pk=Math.round(W[w].pk*(1-(m-20)*.004));std=bStd(pk);document.getElementById('stepBtn').disabled=false;document.getElementById('stBtn').disabled=true;uME();cm('sb');addE('08:00','เริ่มจุดเตา — วัตถุดิบ '+rawKg+' kg | น้ำมัน '+oilMax+' L',true);addE('08:00','ชนิดไม้: '+W[w].lb+' | ความชื้น '+m+'%',false);rSim();setTimeout(()=>bTC(),80);}
+
+function step(){if(!simOn||simH>=24)return;simH++;const w=document.getElementById('wsel').value,m=parseFloat(document.getElementById('moist').value)||20;const pk=Math.round(W[w].pk*(1-(m-20)*.004));std=bStd(pk);const t=sTemp(simH,pk,m);simT.push(t);const{ab,bu,co,pi}=getSys(simH,t);const r=oRate(t,ab,co);oilTot=Math.min(oilMax,+(oilTot+r).toFixed(1));const hr=(8+simH)%24,ts=`${String(hr).padStart(2,'0')}:00`,pT=simT[simT.length-2]||25,df=t-pT;if(simH===1)addE(ts,'🔥 จุดเตา — Afterburner เปิดทำงาน (0–200°C)',true);if(t>200&&pT<=200)addE(ts,'💨 Afterburner ปิด — เปิด Burner หลัก',true);if(t>600&&pT<=600){addE(ts,'⚠️ อุณหภูมิเกิน 600°C!',true);pA('อุณหภูมิเกิน 600°C ที่ '+ts);}if((simH===17||simH===18)&&t>=pk*.95)addE(ts,'🌡️ ถึงอุณหภูมิสูงสุด '+t+'°C',true);if(co&&!getSys(simH-1,pT).co)addE(ts,'❄️ ระบบระบายความร้อนเปิดทำงาน',true);if(simH===24){addE(ts,'✅ เผาเสร็จสิ้น — ผลผลิต ~'+Math.round(rawKg*.87)+' kg',true);pA('การเผาเสร็จสิ้น! ผลผลิต ~'+Math.round(rawKg*.87)+' kg');}else addE(ts,`อุณหภูมิ ${t}°C (${df>=0?'+':''}${df}°C) | น้ำมัน ${r} L/ชม.`,false);if(simH>=24){document.getElementById('stepBtn').disabled=true;document.getElementById('stBtn').disabled=false;kilns[ck].st='done';}else kilns[ck].st=t>200?(simH>=19?'cooling':'burning'):'warming';rSim();uTC();rK();}
+
+function rst(){simOn=false;simH=0;simT=[];std=bStd(800);oilTot=0;evts=[];document.getElementById('stepBtn').disabled=true;document.getElementById('stBtn').disabled=false;kilns[ck].st='idle';rK();rSim();if(tCh){tCh.destroy();tCh=null;}setTimeout(()=>bTC(),50);}
+
+function rSim(){const t=simT[simT.length-1]||25,pT=simT[simT.length-2]||25;const{ab,bu,co,pi}=getSys(simH,t);const w=document.getElementById('wsel').value,m=parseFloat(document.getElementById('moist').value)||20;const pk=Math.round(W[w].pk*(1-(m-20)*.004));const[pn,pc]=getPhase(simH,t,pk);const hr=(8+simH)%24;document.getElementById('clk').textContent=`${String(hr).padStart(2,'0')}:00`;document.getElementById('dl').textContent=`ชั่วโมงที่ ${simH}/24 | เริ่มจุด 08:00 น.`;const pbEl=document.getElementById('pb');pbEl.textContent=pn;pbEl.className='pb '+pc;let cc='#94a3b8';if(t>600)cc='#b91c1c';else if(t>200)cc='#c0390e';else if(t>25)cc='#92400e';const circ=document.getElementById('tcirc');circ.style.borderColor=cc;circ.style.background=t>100?cc+'15':'#eef0f4';document.getElementById('tnum').style.color=cc;document.getElementById('tnum').textContent=t;const df=t-pT,tr=document.getElementById('ttrend');tr.textContent=df>10?'↑':df<-10?'↓':'→';tr.style.color=df>5?'#b91c1c':df<-5?'#1e40af':'#94a3b8';document.getElementById('tsub').textContent=pn;[[bu,'sv1','sd1','ทำงาน','ปิด','don'],[ab,'sv2','sd2',`ทำงาน (${t}°C)`,'ปิด','don'],[co,'sv3','sd3',`ระบาย (${t}°C)`,'ปิด','dwa'],[pi,'sv4','sd4',`ควบคุม ${t}°C`,'ปิด','don']].forEach(([on,vi,di,onL,ofL,dc])=>{document.getElementById(vi).textContent=on?onL:ofL;document.getElementById(vi).style.color=on?'#166534':'#475569';document.getElementById(di).className='dot '+(on?dc:'dof');});const r=oRate(t,ab,co),pct=Math.min(100,Math.round((oilTot/oilMax)*100));document.getElementById('ou').textContent=oilTot.toFixed(1)+' L';document.getElementById('op').textContent=pct+'%';document.getElementById('or2').textContent=r.toFixed(1)+' L/ชม.';document.getElementById('oc2').textContent='฿'+Math.round(oilTot*oilPr).toLocaleString();const fl=document.getElementById('of');fl.style.width=pct+'%';fl.style.background=pct<30?'#16a34a':pct<65?'#d97706':'#b91c1c';document.getElementById('el').innerHTML=evts.slice().reverse().map(e=>`<div class="ei${e.hi?' hi':''}"><span class="et">${e.time}</span><span class="em">${e.msg}</span></div>`).join('');}
+
+function addE(t,m,h){evts.push({time:t,msg:m,hi:h||false});}
+const SI={idle:{c:'kp-i',l:'ว่าง',i:'ki-i'},warming:{c:'kp-w',l:'กำลังวอร์ม',i:'ki-b'},burning:{c:'kp-b',l:'กำลังเผา',i:'ki-b'},cooling:{c:'kp-c',l:'คูลดาวน์',i:'ki-c'},done:{c:'kp-d',l:'เผาเสร็จ',i:'ki-d'}};
+function rK(){const g=document.getElementById('kg');g.innerHTML='';kilns.forEach((k,i)=>{const s=SI[k.st]||SI.idle;const d=document.createElement('div');d.className='kc'+(i===ck?' sel':'');d.onclick=()=>{ck=i;rK();};d.innerHTML=`<div class="ki ${s.i}">🏭</div><div class="kb"><div class="kn">${k.n} <button class="tb" onclick="event.stopPropagation();dK(${i})">🗑</button></div><div class="ks">${k.pv} | ${k.cl}</div><span class="kp ${s.c}">${s.l}</span></div>`;g.appendChild(d);});}
+function dK(i){kilns.splice(i,1);if(ck>=kilns.length)ck=Math.max(0,kilns.length-1);rK();rV();}
+function addK(){const n=document.getElementById('ak1').value.trim();if(!n)return;kilns.push({n,d:document.getElementById('ak2').value,pv:document.getElementById('ak3').value,cl:document.getElementById('ak4').value,st:'idle'});cm('ak');rK();rV();}
+function rV(){const b=document.getElementById('vb');b.innerHTML='';kilns.forEach(k=>{const mo=Math.floor((Date.now()-new Date(k.d))/(30*24*3600*1000));b.innerHTML+=`<tr><td>${k.n}</td><td>${k.cl}</td><td>${k.pv}</td><td>${k.d}</td><td>${mo} เดือน</td></tr>`;});}
+function pA(m){const h=new Date().getHours(),mi=String(new Date().getMinutes()).padStart(2,'0');alts.unshift({m,t:`${h}:${mi} น.`,r:false});rA();}
+function rA(){const l=document.getElementById('al'),n=document.getElementById('na');document.getElementById('ndot').style.display=alts.some(a=>!a.r)?'':'none';if(!alts.length){l.innerHTML='';n.style.display='';return;}n.style.display='none';l.innerHTML=alts.map((a,i)=>`<div class="al ${a.r?'r':'u'}"><div><div>${a.m}</div><div class="at">${a.t}</div></div>${!a.r?`<button class="arb" onclick="mR(${i})">อ่านแล้ว</button>`:''}</div>`).join('');}
+function mR(i){alts[i].r=true;rA();}
+function addM(){const d=document.getElementById('am2').value.trim();if(!d)return;const e=document.createElement('div');e.className='mi';e.innerHTML=`${d}<span class="mc">฿${document.getElementById('am3').value}</span><div class="md">${document.getElementById('am1').value} | ${document.getElementById('am4').value}</div>`;document.getElementById('ml').prepend(e);cm('am');}
+function uME(){const m=parseFloat(document.getElementById('moist').value)||20,w=document.getElementById('wsel').value;document.getElementById('meff').textContent=`→ พีค ${Math.round(W[w].pk*(1-(m-20)*.004))}°C`;}
+function wch(){uME();}
+document.addEventListener('input',e=>{if(e.target.id==='moist')uME();});
+function setRole(r){document.getElementById('rbu').className='rb'+(r==='user'?' on':'');document.getElementById('rbv').className='rb'+(r==='vendor'?' on':'');document.getElementById('tbu').style.display=r==='user'?'flex':'none';document.getElementById('tbv').style.display=r==='vendor'?'flex':'none';showP(r==='vendor'?'vendor':'kilns');}
+function showP(n){document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));const el=document.getElementById('pane-'+n);if(el)el.classList.add('on');const map={kilns:'เตาเผา',sim:'จำลอง',stats:'สถิติ',alerts:'แจ้งเตือน',vendor:'แดชบอร์ด'};document.querySelectorAll('.tab').forEach(t=>{if(t.textContent.includes(map[n]||''))t.classList.add('on');});if(n==='sim'&&!tCh)setTimeout(()=>{std=bStd(800);bTC();},80);if(n==='stats')setTimeout(bSC,80);}
+function om(n){document.getElementById('m-'+n).classList.add('on');}
+function cm(n){document.getElementById('m-'+n).classList.remove('on');}
+std=bStd(800);rK();rV();rA();uME();setTimeout(()=>bTC(),150);
+</script>
+</body>
+</html>
